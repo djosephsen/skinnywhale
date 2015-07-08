@@ -53,6 +53,23 @@ service docker restart
 docker info
 ```
 
+You should now see a "skinny" version of the container listed as an image. You
+can specify this image in a Dockerfile like so:
+
+```
+FROM skinny_8efbc5497abb
+ADD  myPythonScript.py /
+CMD ["myPythonScript.py"]
+``
+Now build it: 
+
+```
+docker build -t myTeensyAppContainer .
+```
+...and now you have a dockerized version of your application that contains only
+your script and the runtime needed to execute it (and not the entire rest of
+ubuntu or whatever). 
+
 ## How does this work?
 Skinnywhale is pretty simple, it finds the aufs path for the container ID you
 give it, and walks through it looking for binary files that are dynamically
