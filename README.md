@@ -12,7 +12,8 @@ their bloated counterparts.  Here's how you use it:
 
 ## step 2. Make a container that has the runtime you need in it
 
-``` apt-get update
+``` 
+apt-get update
 apt-get install python3
 exit
 
