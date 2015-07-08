@@ -108,9 +108,9 @@ done
 
 #tar it all up and re-dockerize it
 cd ${LPATH}
-tar -c . --exclude=/var/cache | docker import - starved${1}
-debug "tar -cv . | docker import - starved${1}"
-echo "--- Skinny whale is positively starving ---"
+tar -c . --exclude=/var/cache | docker import - skinny_${1}
+debug "tar -cv . | docker import - skinny_${1}"
+echo "--- Skinnywhale says: skinny_${1} is positively starving ---"
 echo '
                     ##        .            
               ## ## ##       ==            
