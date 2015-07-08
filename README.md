@@ -72,4 +72,4 @@ Second, Skinnywhale can't detect if your runtime uses dlOpen(). You're on
 you're on there I'm afraid. I've been using skinnywhale for python and java
 stuff at work, and in practice I've found this not to be an issue.  If it
 becomes an issue I might think about adding options to just wholesale copy
-across the parent /lib /usr/lib et all..
+across the parent /lib /usr/lib et al..
