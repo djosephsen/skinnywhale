@@ -24,31 +24,25 @@ function getFullHash {
 	basename $(find ${AUFS} -maxdepth 1 -name ${1}* | grep -v 'init')
 }
 
-function findDep {
-#walk the images starting at $1 looking for $2
-	if [ -f "${AUFS}/${1}/${2}" ]
-	then
-		echo "${AUFS}/${1}/${2}"
-	else
-		fdPARENT=$(docker inspect ${1} | egrep 'Parent":' | sort | uniq | cut -d':' -f2 | tr -d '", ')
-		for P in $(docker history ${fdPARENT} | sed -ne '2,$p' | sed -e 's/ .*//')
-		do
-			IMAGE=$(getFullHash ${P})
-			debug "checking for ${AUFS}/${IMAGE}/${2}"
-			if [ -f "${AUFS}/${IMAGE}/${2}" ]
-			then
-				debug "Found $2 at ${AUFS}/${IMAGE}/${2}"
-				echo "${AUFS}/${IMAGE}/${2}"
-				break
-			fi	
-		done
-	fi
+function mountDiff {
+# Copy the diff filesystem to our tmp
+	mkdir -p ${FS_DIFF}
+	cp -a ${1} ${FS_DIFF}
 }
 
-function panicAndFindDep {
-#be stupid and just find the dang thing
-	DEP=$(basename ${1})
-	find ${AUFS} -name ${DEP} | head -n1
+function mountFull {
+# Copy the full filesystem to our tmp
+	mkdir -p ${FS_FULL}
+	cd ${FS_FULL}
+	docker export ${CONTAINER} | tar -x
+}
+
+function findDep {
+#Find $2 in the full filesystem
+	if [ -f "${FS_FULL}/${2}" ]
+	then
+		echo "${FS_FULL}/${1}/${2}"
+	fi
 }
 
 #lets kick this pig
@@ -62,22 +56,28 @@ then
 	exit 42
 fi
 
+OURTEMP="/tmp/skinnyRun${RANDOM}"
+mkdir -p ${OURTEMP}
+debug "rundir is ${OURTEMP}"
+FS_DIFF=${OURTEMP}/DIFF
+FS_FULL=${OURTEMP}/FULL
 LAYER=$(getFullHash ${1})
 debug "layer is ${LAYER}"
 LPATH="${AUFS}/${LAYER}"
 debug "LPATH is ${LPATH}"
-PARENT_NAME=$(docker ps -a | grep ${1}| sed -e 's/ \+/ /g' | cut -d\  -f2)
-PARENT=$(docker images | grep "^${PARENT_NAME}" | sed -e 's/ \+/ /g' | cut -d\  -f3)
-debug "PARENT is ${PARENT}"
 DEPS=''
 
+#synch our temp dir
+mountDiff ${LPATH}
+mountFull ${1}
+
 #copy over the linker
-LINKER=$(findDep $(getFullHash ${PARENT}) /usr/bin/ldd)
-debug "cp -nv ${LINKER} ${LPATH}/usr/bin"
-cp -nv ${LINKER} ${LPATH}/usr/bin
+LINKER=$(findDep /usr/bin/ldd)
+debug "cp -nv ${LINKER} ${FS_DIFF}/usr/bin"
+cp -nv ${LINKER} ${FS_DIFF}/usr/bin
 
 #recursively grab the library dependencies for every binary
-for FILE in `find ${LPATH} -type f`
+for FILE in `find ${FS_DIFF} -type f`
 do
 	if file ${FILE} | grep -q 'dynamically linked'
 	then
@@ -91,23 +91,26 @@ done
 debug "DEPENDENCIES is ${DEPS}"
 for DEP in ${DEPS}
 do
-	mkdir -p ${LPATH}/$(dirname ${DEP})
-	SOURCE=$(findDep ${PARENT} ${DEP})
-	if [ -z "${SOURCE}" ]
-	then
-		SOURCE=$(panicAndFindDep ${DEP})
-	fi
+	mkdir -p ${FS_DIFF}/$(dirname ${DEP})
+	SOURCE=$(findDep ${DEP})
 	if [ -z "${SOURCE}" ]
 	then
 		echo "ERROR!!!, can't find ${DEP} in the parent images"
-		#exit 42
+		#need an option to panic and die here
 	else
-		cp -nv ${SOURCE} ${LPATH}/${DEP}
+		cp -nv ${SOURCE} ${FS_DIFF}/${DEP}
 	fi
 done
 
+#Copy in the lib dir if BRUTELIB is set
+debug "BRUTELIB enabled! Copying over ${FD_FULL}/lib"
+if [ "${BRUTELIB}" ]
+then 
+	cp -a ${FD_FULL}/lib ${FD_DIFF}
+fi
+
 #tar it all up and re-dockerize it
-cd ${LPATH}
+cd ${FS_DIFF}
 tar -c . --exclude=/var/cache | docker import - skinny_${1}
 debug "tar -cv . | docker import - skinny_${1}"
 echo "--- Skinnywhale says: skinny_${1} is positively starving ---"
