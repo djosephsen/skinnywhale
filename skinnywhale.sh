@@ -111,6 +111,12 @@ then
 	cp -a ${FS_FULL}/lib ${FS_DIFF}
 fi
 
+debug "BRUTEUSRLIB enabled! Copying over ${FS_FULL}/lib"
+if [ "${BRUTEUSRLIB}" ]
+then 
+	cp -a ${FS_FULL}/usr/lib ${FS_DIFF}
+fi
+
 #tar it all up and re-dockerize it
 cd ${FS_DIFF}
 debug "tar -cv . | docker import - skinny_${1}"

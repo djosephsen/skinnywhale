@@ -86,12 +86,20 @@ docker build -t myTeensyAppContainer .
 script and the runtime needed to execute it (and not the entire rest of ubuntu
 or whatever). 
 
+## A few Options
+Skinnywhale uses environment variables to control a few options: 
+
+* DEBUG : enable debug mode
+* NOCLEANUP : don't clean up the working directories in /tmp
+* BRUTELIB : brute-force copy the entire /lib directory from the fat image (try this if you're having name resolver issues etc..
+* BRUTEUSRLIB : brute-force copy the entire /usr/lib directory from the fat image. 
+
 ## How does this work?
 Skinnywhale is pretty simple, it finds the aufs path for the container ID you
 give it, and walks through it looking for binary files that are dynamically
 linked. Skinnywhale resolves each of these dependencies by copying the linked
-library files in from the parent image's aufs directory. It then tars up the
-resulting filesystem and *docker import*s it. 
+library files in from the parent image. It then tars up the resulting
+filesystem and *docker import*s it. 
 
 There are two caveats to this process. First, some binary-distributed runtime
 environments (like the oracle JDK), contain files that link to libs that may
@@ -103,9 +111,9 @@ also work post-skinnywhale.
 
 Second, Skinnywhale can't detect if your runtime uses dlOpen(). You're on
 you're on there I'm afraid. FWIW I've been using skinnywhale for python and
-java stuff at work, and in practice I've found this not to be an issue.  If it
-becomes an issue I might think about adding options to just wholesale copy
-across the parent /lib /usr/lib et al.. Chances are though, if someone is using
+java stuff at work, and in practice I've found this not to be an issue.  If
+you're having trouble getting stuff to run after it's been skinnywhaled, try
+setting the BRUTE variables described above.  Chances are, if someone is using
 dlOpen(), those libs are going to be part of the distribution files for the
 runtime (ie you aren't going to assume a lib file is lying around somewhere
 unless *you* put it there, (unless you're silly or mean)), and since
