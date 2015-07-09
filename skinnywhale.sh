@@ -5,7 +5,7 @@ AUFS='/var/lib/docker/aufs/diff'
 
 function usage {
 #print usage and exit
-        echo "usage: whalestarve <container ID>"
+        echo "usage: skinnywhale.sh <container ID>"
 	exit 42
 }
 
