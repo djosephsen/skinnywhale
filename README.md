@@ -102,7 +102,7 @@ to dlOpen'd stuff. YMMV.  Caveat emptor. etc...
 
 ## No I mean *HOW* does this work?
 Oh. Pretty well I guess? Java images are still stupid big, because java is
-stupid big. Skinnywhale is irrelevent for Go because static binaries. It gets a
+stupid big. Skinnywhale is irrelevant for Go because static binaries. It gets a
 python runtime down to about 33MB, but yeah, the jvm environments are still
 like 370MB (it is what it is.  Still beats the gigabyte-sized java images
 floating around in the public registries).
