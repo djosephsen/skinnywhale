@@ -111,10 +111,12 @@ fi
 
 #tar it all up and re-dockerize it
 cd ${FS_DIFF}
-tar -c . --exclude=/var/cache | docker import - skinny_${1}
 debug "tar -cv . | docker import - skinny_${1}"
-echo "--- Skinnywhale says: skinny_${1} is positively starving ---"
-echo '
+tar -c . --exclude=/var/cache | docker import - skinny_${1}
+if [ $? -eq 0 ]
+then
+	echo "--- Skinnywhale says: skinny_${1} is positively starving ---"
+	echo '
                     ##        .            
               ## ## ##       ==            
            ## ## ## ##      ===            
@@ -123,3 +125,15 @@ echo '
   ~~~{ /\ ~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
        \______////////////__/            
 '
+else
+	echo 'OH NOES CRITICAL ERROR. I couldnt write your image sorry'
+fi
+
+if [ "${NOCLEANUP}" ]
+then
+	echo "not cleaning up my tempdir because NOCLEANUP is set (${OURTEMP}"
+else
+	rm -Rf ${OURTEMP}
+fi
+
+fi
