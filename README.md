@@ -25,7 +25,7 @@ Python images usually come out to be around 30MB. Here's how you use it:
 
 ``` docker run -ti ubuntu ```
 
-## step 2. Make a container that has the runtime you need in it
+## step 2. Add the stuff you need to it (creates a new container)
 
 ``` 
 apt-get update
@@ -36,7 +36,7 @@ docker ps -a
 <copy the container ID you just created eg.. 8efbc5497abb>
 ```
 
-## step 3. isolate the runtime layer you just added
+## step 3. use skinnywhale to isolate the stuff you just added
 
 ```
 skinnywhale 8efbc5497abb
