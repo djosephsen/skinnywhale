@@ -103,10 +103,10 @@ do
 done
 
 #Copy in the lib dir if BRUTELIB is set
-debug "BRUTELIB enabled! Copying over ${FD_FULL}/lib"
+debug "BRUTELIB enabled! Copying over ${FS_FULL}/lib"
 if [ "${BRUTELIB}" ]
 then 
-	cp -a ${FD_FULL}/lib ${FD_DIFF}
+	cp -a ${FS_FULL}/lib ${FS_DIFF}
 fi
 
 #tar it all up and re-dockerize it
