@@ -28,6 +28,8 @@ function mountDiff {
 # Copy the diff filesystem to our tmp
 	mkdir -p ${FS_DIFF}
 	cp -a ${1}/* ${FS_DIFF}
+	cd ${FS_DIFF}
+	rm -Rf var/cache
 }
 
 function mountFull {
@@ -35,7 +37,6 @@ function mountFull {
 	mkdir -p ${FS_FULL}
 	cd ${FS_FULL}
 	docker export ${1} | tar -x
-	rm -Rf var/cache
 }
 
 function findDep {
