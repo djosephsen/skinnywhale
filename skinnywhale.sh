@@ -35,6 +35,7 @@ function mountFull {
 	mkdir -p ${FS_FULL}
 	cd ${FS_FULL}
 	docker export ${1} | tar -x
+	rm -Rf var/cache
 }
 
 function findDep {
