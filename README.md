@@ -1,6 +1,18 @@
 # skinnywhale
 Skinnywhale helps you make smaller (as in megabytes) Docker containers
 
+```
+--- Skinny whale is positively starving ---
+
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""\___/ ===
+      /	rX
+  ~~~{ /\ ~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______////////////__/
+```
+
 If, for example, you want to run a python script in a container, normally you'd
 have to download a 600MB image that had the python interpretor along with most
 of an OS inside it. Skinnywhale helps you isolate runtime environments like
