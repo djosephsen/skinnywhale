@@ -27,21 +27,21 @@ function getFullHash {
 function mountDiff {
 # Copy the diff filesystem to our tmp
 	mkdir -p ${FS_DIFF}
-	cp -a ${1} ${FS_DIFF}
+	cp -a ${1}/* ${FS_DIFF}
 }
 
 function mountFull {
 # Copy the full filesystem to our tmp
 	mkdir -p ${FS_FULL}
 	cd ${FS_FULL}
-	docker export ${CONTAINER} | tar -x
+	docker export ${1} | tar -x
 }
 
 function findDep {
-#Find $2 in the full filesystem
-	if [ -f "${FS_FULL}/${2}" ]
+#Find $1 in the full filesystem
+	if [ -f "${FS_FULL}/${1}" ]
 	then
-		echo "${FS_FULL}/${1}/${2}"
+		echo "${FS_FULL}/${1}"
 	fi
 }
 
