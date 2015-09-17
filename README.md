@@ -75,7 +75,7 @@ You can specify this image in a Dockerfile like so:
 ```
 FROM skinny_8efbc5497abb
 ADD  myPythonScript.py /
-CMD ["myPythonScript.py"]
+CMD ["/usr/bin/python", "myPythonScript.py"]
 ```
 Now build it: 
 
