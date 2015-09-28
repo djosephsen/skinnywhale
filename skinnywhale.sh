@@ -73,6 +73,9 @@ DEPS=''
 mountDiff ${LPATH}
 mountFull ${1}
 
+# Ensure the ${FS_DIFF}/user/bin path exists
+mkdir -p ${FS_DIFF}/usr/bin
+
 #copy over the linker
 LINKER=$(findDep /usr/bin/ldd)
 debug "cp -nv ${LINKER} ${FS_DIFF}/usr/bin"
