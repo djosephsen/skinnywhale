@@ -110,7 +110,7 @@ as long as your app works with the base image you're trying to use, it should
 also work post-skinnywhale. 
 
 Second, Skinnywhale can't detect if your runtime uses dlOpen(). You're on
-you're on there I'm afraid. FWIW I've been using skinnywhale for python and
+your own there I'm afraid. FWIW I've been using skinnywhale for python and
 java stuff at work, and in practice I've found this not to be an issue.  If
 you're having trouble getting stuff to run after it's been skinnywhaled, try
 setting the BRUTE variables described above.  Chances are, if someone is using
