@@ -21,7 +21,7 @@ function debug {
 
 function getFullHash {
 #return the full hash for a given container ID
-	basename $(find ${AUFS} -maxdepth 1 -name ${1}* | grep -v 'init')
+	echo $(cat /var/lib/docker/image/aufs/layerdb/mounts/$(docker inspect --format {{.Id}} ${1})/mount-id)
 }
 
 function mountDiff {
